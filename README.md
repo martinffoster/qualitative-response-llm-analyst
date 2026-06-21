@@ -172,7 +172,58 @@ Run several assignment models and compare results before final human coding.
 
 ## Releasing
 
-Tagged releases (`v*`) are published to PyPI via GitHub Actions using [PyPI trusted publishing](https://docs.pypi.org/trusted-publishers/). Before the first release, configure a trusted publisher on PyPI for workflow `release.yml` in this repository.
+Production releases use [PyPI trusted publishing](https://docs.pypi.org/trusted-publishers/). TestPyPI uses the same mechanism for dry runs before the first real upload.
+
+### One-time setup
+
+1. Create an account at [test.pypi.org](https://test.pypi.org/) (separate from production PyPI).
+2. Enable **2FA** on both TestPyPI and production PyPI.
+3. Add a **trusted publisher** on each site (Account settings → Publishing, or project settings after the first upload):
+   - **TestPyPI:** workflow `test-release.yml`, environment `testpypi` (optional but recommended)
+   - **Production PyPI:** workflow `release.yml`, environment `pypi` (optional but recommended)
+4. In GitHub: **Settings → Environments** — create `testpypi` and `pypi` if you want approval gates before publish.
+
+### Dry run on TestPyPI
+
+Use this before tagging a production release.
+
+1. Ensure `version` in `pyproject.toml` is the version you want to test (TestPyPI allows re-upload only if you bump the version or delete the file).
+2. Push your branch to GitHub.
+3. Open **Actions → Test Release → Run workflow** and start the run.
+4. Install from TestPyPI (dependencies still come from production PyPI):
+
+```bash
+python -m venv .venv-test
+source .venv-test/bin/activate   # Windows: .venv-test\Scripts\activate
+pip install -i https://test.pypi.org/simple/ \
+  --extra-index-url https://pypi.org/simple/ \
+  qualitative-response-llm-analyst
+```
+
+5. Smoke-test the install:
+
+```bash
+qrla --help
+qrla init-template /tmp/test-workbook.xlsx
+qrla validate /tmp/test-workbook.xlsx
+```
+
+6. When satisfied, tag and push for production:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+That triggers **Release** (`release.yml`) and publishes to [pypi.org](https://pypi.org/project/qualitative-response-llm-analyst/).
+
+Install from production PyPI:
+
+```bash
+pip install qualitative-response-llm-analyst
+```
+
+**Note:** TestPyPI is ephemeral — do not rely on packages staying there long term. It exists to validate packaging and install before the real release.
 
 ## License
 
