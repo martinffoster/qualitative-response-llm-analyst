@@ -1,6 +1,8 @@
 # Qualitative Response LLM Analyst
 
-Tools for **coding qualitative survey responses** using a hybrid of **human review** and **multi-model LLM assistance** via [OpenRouter](https://openrouter.ai/).
+Tools for **coding qualitative survey responses** using a hybrid of **human review** and **multi-model LLM assistance**.
+
+LLMs via [OpenRouter](https://openrouter.ai/).
 
 The workflow supports:
 
@@ -97,18 +99,18 @@ qrla validate data/my-survey-Q01-themes.xlsx
 # Stage 1 — discover themes from responses
 qrla discover data/my-survey-Q01-themes.xlsx \
   --question-id SURVEY_2025_Q01 \
-  --model openai/gpt-4o \
+  --model openai/gpt-5.5 \
   --max-themes 30 \
   -v
 
 # Stage 2 — assign themes (run once per model for multi-model comparison)
-qrla assign data/my-survey-Q01-themes.discovered.openai_gpt_4o.xlsx \
+qrla assign data/my-survey-Q01-themes.discovered.openai_gpt_5_5.xlsx \
   --question-id SURVEY_2025_Q01 \
-  --model anthropic/claude-3.5-haiku \
+  --model openai/gpt-5.4-mini \
   -v
 
 # Stage 3 — summarise assignments for human review
-qrla summarize data/my-survey-Q01-themes.discovered.openai_gpt_4o.xlsx \
+qrla summarize data/my-survey-Q01-themes.discovered.openai_gpt_5_5.xlsx \
   --question-id SURVEY_2025_Q01 \
   --chart auto \
   -v
@@ -117,7 +119,7 @@ qrla summarize data/my-survey-Q01-themes.discovered.openai_gpt_4o.xlsx \
 Common options:
 
 - `--question-id` — must match a row in the `question` sheet
-- `--model` — OpenRouter model id (e.g. `openai/gpt-4o`, `anthropic/claude-3.5-sonnet`)
+- `--model` — OpenRouter model id (e.g. `openai/gpt-5.5`, `anthropic/claude-sonnet-4.6`)
 - `--max-themes` — cap on themes discovered or assigned per response
 - `--context-column` — optional column on the `question` sheet with domain-specific coding guidance
 - `-v` / `-vv` — progress stats; `-vv` also prints prompts and raw LLM output
@@ -126,12 +128,12 @@ See [`docs/spec/workflow.md`](./docs/spec/workflow.md) for the full stage-by-sta
 
 ## Model guidance
 
-Typical choices (via OpenRouter):
+Typical choices (via OpenRouter — pass the model id to `--model`):
 
-- **Discovery / theme review:** capable frontier models (e.g. GPT-4o, Claude Sonnet)
-- **Assignment:** faster, cheaper models (e.g. GPT-4o mini, Gemini Flash, Claude Haiku)
+- **Discovery / theme review:** capable frontier models — e.g. `openai/gpt-5.5`, `anthropic/claude-sonnet-4.6`, `google/gemini-3.1-pro-preview`, `x-ai/grok-4.3`, `mistralai/mistral-large-2512`
+- **Assignment:** faster, cheaper models — e.g. `openai/gpt-5.4-mini`, `anthropic/claude-haiku-4.5`, `google/gemini-3.5-flash`, `x-ai/grok-build-0.1`, `mistralai/mistral-small-2603`
 
-Run several models on assignment and compare results before final human coding.
+Run several assignment models and compare results before final human coding.
 
 ## Theme status values
 
