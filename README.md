@@ -208,20 +208,37 @@ qrla init-template /tmp/test-workbook.xlsx
 qrla validate /tmp/test-workbook.xlsx
 ```
 
-6. When satisfied, tag and push for production:
+6. When satisfied, update [CHANGELOG.md](./CHANGELOG.md), bump `version` in `pyproject.toml`, commit, then tag and push:
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.1.1
+git push origin v0.1.1
 ```
 
-That triggers **Release** (`release.yml`) and publishes to [pypi.org](https://pypi.org/project/qualitative-response-llm-analyst/).
+That triggers **Release** (`release.yml`), which publishes to [PyPI](https://pypi.org/project/qualitative-response-llm-analyst/) and creates a [GitHub Release](https://github.com/martinffoster/qualitative-response-llm-analyst/releases) with notes and attached sdist/wheel.
 
 Install from production PyPI:
 
 ```bash
 pip install qualitative-response-llm-analyst
 ```
+
+### Git tag vs GitHub Release
+
+A **git tag** (`v0.1.0`) triggers the release workflow and PyPI upload. A **GitHub Release** is the page users see under [Releases](https://github.com/martinffoster/qualitative-response-llm-analyst/releases) with notes and downloadable assets. From `v0.1.1` onward, `release.yml` creates both automatically.
+
+### Backfill an existing tag (e.g. `v0.1.0`)
+
+If you tagged before GitHub Releases were configured, create the release once without re-publishing to PyPI:
+
+```bash
+gh release create v0.1.0 \
+  --title "0.1.0" \
+  --notes-file CHANGELOG.md \
+  --verify-tag
+```
+
+Or in the web UI: **Releases → Draft a new release → Choose tag `v0.1.0` → paste notes → Publish release**.
 
 **Note:** TestPyPI is ephemeral — do not rely on packages staying there long term. It exists to validate packaging and install before the real release.
 
