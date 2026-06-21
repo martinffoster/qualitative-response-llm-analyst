@@ -1,0 +1,37 @@
+# version: 1
+# stage: theme_review
+# task_type: theme_suggestion
+
+Survey: {survey_name}
+{question_context_section}Question: {question_code} — {question_text}
+{research_context_section}{custom_context_section}Response corpus:
+{responses_block}
+
+You are assisting a research analyst to review and validate an existing theme taxonomy against a corpus of survey responses.
+
+**Existing Theme Groups:**
+{existing_groups_block}
+
+**Existing Themes:**
+{existing_themes_block}
+
+**Tasks:**
+1. For each existing theme, determine if it is still pertinent in the corpus:
+   - "keep": Theme is still valid and appears in responses
+   - "retire": Theme is not found in the corpus or is no longer relevant
+2. Identify new themes not covered by existing themes (up to {max_new_themes}).
+3. If a theme should be modified/replaced, suggest a replacement theme.
+
+Return strictly valid JSON with this structure:
+{{
+  "validated_themes": [{{"theme_id": "...", "action": "keep|retire"}}, ...],
+  "new_theme_groups": [{{"group_label": "...", "group_definition": "..."}}, ...],
+  "new_themes": [
+    {{"theme_label": "...", "theme_definition": "...", "group_label": "...", "replaces_theme_id": "..." (optional)}}
+  ],
+  "suggested_retirements": ["theme_id1", "theme_id2", ...]
+}}
+- If a theme should be kept, include it in validated_themes with action="keep"
+- If a theme should be retired, include it in validated_themes with action="retire" OR list it in suggested_retirements
+- For theme replacements, set replaces_theme_id to the original theme_id in the new_themes entry
+- Do not include any extra commentary.

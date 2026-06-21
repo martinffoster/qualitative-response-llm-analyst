@@ -1,0 +1,30 @@
+[project]
+name = "qualitative-response-llm-analyst"
+version = "0.1.0"
+description = "LLM-assisted qualitative survey coding with auditable Excel workbooks"
+readme = "README.md"
+license = { text = "BSD-2-Clause" }
+requires-python = ">=3.11"
+authors = [{ name = "Martin Foster" }]
+
+dependencies = [
+  "typer>=0.9",
+  "pandas>=2.0",
+  "openpyxl>=3.1",
+  "python-dotenv>=1.0",
+  "httpx>=0.24",
+  "rich>=13.0",
+]
+
+[project.scripts]
+qrla = "qrla.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+qrla = ["prompts/*.txt"]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"

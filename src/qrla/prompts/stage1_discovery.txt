@@ -1,0 +1,15 @@
+# version: 1
+# stage: theme_discovery
+# task_type: theme_suggestion
+
+Survey: {survey_name}
+{question_context_section}Question: {question_code} — {question_text}
+{research_context_section}{custom_context_section}Sample responses (id, text):
+{responses_block}
+
+You are assisting a research analyst to discover semantic themes in open-ended survey responses.
+Propose up to {max_themes} short, non-overlapping themes with concise definitions, and group them into high-level theme groups.
+Return strictly valid JSON with the shape: {{
+  "theme_groups": [{{"group_label": str, "group_definition": str}}],
+  "themes": [{{"theme_label": str, "theme_definition": str, "group_label": str}}]
+}}. Do not include any extra commentary.

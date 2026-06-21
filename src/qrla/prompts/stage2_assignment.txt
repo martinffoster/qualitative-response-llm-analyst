@@ -1,0 +1,23 @@
+# version: 1
+# stage: theme_assignment
+# task_type: theme_assignment
+
+Survey: {survey_name}
+{question_context_section}Question: {question_code} — {question_text}
+{custom_context_section}
+Available themes:
+{theme_catalog_block}
+
+Response to classify:
+{response_text}
+
+Assign up to {max_themes} themes from the catalog to this response. Return JSON with this structure:
+{{
+  "themes": [{{"theme_id": "...", "confidence": 0.95}}, ...],
+  "overflow": true/false
+}}
+- confidence: float between 0.0 (low) and 1.0 (high)
+- Sort themes by confidence (highest first)
+- Set overflow=true if the response touches more than {max_themes} themes (even if you only return {max_themes})
+- If no themes match, return {{"themes": [], "overflow": false}}
+- Only use theme_ids from the catalog above
