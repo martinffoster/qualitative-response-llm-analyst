@@ -14,6 +14,14 @@ The workflow supports:
 
 All behaviour follows the specification in the [project overview](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/overview.md).
 
+## History and Purpose
+
+First version ~July 2023; with major improvements 2024, 2025.  
+
+Used to support the qualitative analysis of:
+* [Business Agility Insititute](https://businessagility.institute/)'s Business Agility Report [2023](https://businessagility.institute/learn/2023-business-agility-report/751),[2024](https://businessagility.institute/learn/2024-business-agility-report/754),[2025](https://businessagility.institute/learn/the-2025-business-agility-report/758). [Personal site cache](https://netlog.net/publications/business-agility-report/)
+* [Organisational Design Forum Practitioner Survey 2026](https://organizationdesignforum.org/odf-research/). [Personal site cache](https://netlog.net/publications/odf-global-practitioner-report-2026/)
+
 ## Repository structure
 
 ```
