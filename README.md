@@ -12,7 +12,7 @@ The workflow supports:
 - Producing **auditable coded datasets** in Excel workbooks
 - Summarising model assignments for human-in-the-loop review
 
-All behaviour follows the specification in [`docs/spec/overview.md`](./docs/spec/overview.md).
+All behaviour follows the specification in the [project overview](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/overview.md).
 
 ## Repository structure
 
@@ -21,16 +21,15 @@ All behaviour follows the specification in [`docs/spec/overview.md`](./docs/spec
 ├── docs/
 │   ├── agents/          Agent and contributor guidance
 │   └── spec/            Workbook schema, workflow, constraints
-├── prompts/             LLM prompt templates (see prompts/README.md)
+├── prompts/             Authoring notes for LLM prompt templates
 ├── src/qrla/            Python package (`qrla` CLI)
-│   └── prompts/         Bundled .txt templates loaded at runtime
-├── templates/
-│   └── qual_coding_template.xlsx   Canonical workbook structure
+│   ├── prompts/         Bundled .txt templates loaded at runtime
+│   └── templates/       Bundled canonical Excel workbook template
 ├── .env.example         Environment variable template
 └── README.md
 ```
 
-Survey workbooks live under `data/` (gitignored). Copy the template to create a new question workbook.
+Survey workbooks live under `data/` (gitignored). Create a new workbook from the bundled template (see below).
 
 ## Requirements
 
@@ -39,16 +38,18 @@ Survey workbooks live under `data/` (gitignored). Copy the template to create a 
 
 ## Installation
 
+From PyPI:
+
+```bash
+pip install qualitative-response-llm-analyst
+```
+
+For local development:
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e .
-```
-
-Or install dependencies directly:
-
-```bash
-pip install pandas openpyxl python-dotenv httpx rich typer
+pip install -e ".[dev]"
 ```
 
 ## Configuration
@@ -74,7 +75,13 @@ Each question is one Excel workbook with these sheets:
 | `responses_coded` | One row per response; model outputs and human finals |
 | `model_runs`      | Model metadata and parameters for audit              |
 
-Copy [`templates/qual_coding_template.xlsx`](./templates/qual_coding_template.xlsx) and keep sheet names and column headers unchanged. Full schema details: [`docs/spec/schemas.md`](./docs/spec/schemas.md).
+Create a workbook from the bundled template:
+
+```bash
+qrla init-template data/my-survey-Q01-themes.xlsx
+```
+
+Keep sheet names and column headers unchanged. Full schema details: [schemas](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/schemas.md).
 
 ## CLI commands
 
@@ -82,6 +89,7 @@ The `qrla` command implements the end-to-end workflow:
 
 | Command              | Stage | Description                                      |
 | -------------------- | ----- | ------------------------------------------------ |
+| `qrla init-template`   | —     | Copy the bundled canonical workbook template     |
 | `qrla validate`        | —     | Check a workbook against the template            |
 | `qrla discover`        | 1     | Propose themes from response samples             |
 | `qrla review-themes`   | 1.5   | Validate, extend, or retire existing themes      |
@@ -93,7 +101,8 @@ The `qrla` command implements the end-to-end workflow:
 ### Quick start
 
 ```bash
-# Validate workbook structure
+# Create and validate a new workbook
+qrla init-template data/my-survey-Q01-themes.xlsx
 qrla validate data/my-survey-Q01-themes.xlsx
 
 # Stage 1 — discover themes from responses
@@ -124,7 +133,7 @@ Common options:
 - `--context-column` — optional column on the `question` sheet with domain-specific coding guidance
 - `-v` / `-vv` — progress stats; `-vv` also prints prompts and raw LLM output
 
-See [`docs/spec/workflow.md`](./docs/spec/workflow.md) for the full stage-by-stage process.
+See the [workflow spec](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/workflow.md) for the full stage-by-stage process.
 
 ## Model guidance
 
@@ -147,11 +156,11 @@ Run several assignment models and compare results before final human coding.
 
 ## Documentation
 
-- [Specification overview](./docs/spec/overview.md)
-- [Workflow](./docs/spec/workflow.md)
-- [Schemas](./docs/spec/schemas.md)
-- [Agents guide](./docs/agents/README.md)
-- [TODO](./docs/TODO.md)
+- [Specification overview](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/overview.md)
+- [Workflow](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/workflow.md)
+- [Schemas](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/spec/schemas.md)
+- [Agents guide](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/agents/README.md)
+- [TODO](https://github.com/martinffoster/qualitative-response-llm-analyst/blob/main/docs/TODO.md)
 
 ## Contributing
 
@@ -159,6 +168,11 @@ Run several assignment models and compare results before final human coding.
 2. Follow PEP 8; use type hints and docstrings
 3. Keep `README.md` and `docs/` in sync when changing behaviour
 4. Do not commit survey data or API keys
+5. Run tests locally with `pytest` before opening a PR (CI runs the same checks on GitHub Actions)
+
+## Releasing
+
+Tagged releases (`v*`) are published to PyPI via GitHub Actions using [PyPI trusted publishing](https://docs.pypi.org/trusted-publishers/). Before the first release, configure a trusted publisher on PyPI for workflow `release.yml` in this repository.
 
 ## License
 

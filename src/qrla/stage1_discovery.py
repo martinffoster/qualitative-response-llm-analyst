@@ -19,6 +19,7 @@ from .prompt_templates import (
     optional_context_line,
     render_prompt,
 )
+from .resources import bundled_template_path
 from .themes import Theme, generate_theme_id, normalize_label
 from .validation import validate_workbook
 
@@ -371,7 +372,7 @@ def discover(
     start_time = time.time()
     
     # Validate against template if available
-    tpl_default = "templates/qual_coding_template.xlsx"
+    tpl_default = bundled_template_path()
     try:
         _valid, _issues = validate_workbook(workbook, tpl_default)
         # We don't exit on failure; discovery can still proceed on close-enough shapes

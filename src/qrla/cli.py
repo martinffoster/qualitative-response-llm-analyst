@@ -1,6 +1,7 @@
 import typer
 from pathlib import Path
 
+from .resources import bundled_template_path, copy_bundled_template
 from .validation import validate_workbook
 from .themes import generate_theme_id, normalize_label
 from .stage1_discovery import discover as discover_stage1
@@ -12,14 +13,29 @@ from .stage3_summary import summarize as summarize_stage3
 app = typer.Typer()
 
 
+@app.command("init-template")
+def init_template(
+    output: str = typer.Argument(
+        "qual_coding_workbook.xlsx",
+        help="Path for the new workbook copied from the bundled template.",
+    ),
+):
+    """Copy the bundled canonical workbook template to a new file."""
+    destination = copy_bundled_template(Path(output))
+    typer.echo(f"Wrote template: {destination}")
+
+
 @app.command()
 def validate(
     workbook: str = typer.Argument(..., help="Path to workbook to validate."),
-    template: str = typer.Option("templates/qual_coding_template.xlsx", help="Path to template workbook."),
+    template: str = typer.Option(
+        None,
+        help="Path to template workbook; defaults to the bundled canonical template.",
+    ),
 ):
     """Validate a workbook against the canonical template."""
     wb_path = Path(workbook)
-    tpl_path = Path(template)
+    tpl_path = Path(template or bundled_template_path())
     if not wb_path.exists():
         typer.echo(f"workbook not found: {wb_path}")
         raise typer.Exit(code=2)
